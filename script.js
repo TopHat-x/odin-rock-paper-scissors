@@ -9,6 +9,7 @@ const playerScoreText = document.querySelector("#player-score");
 const computerScoreText = document.querySelector("#computer-score");
 const roundText = document.querySelector("#round");
 const results = document.querySelector("#results");
+var gameOver = false;
 
 const rockButton = document.querySelector("#rock-button");
 rockButton.addEventListener("click", () => playRound("rock"));
@@ -26,16 +27,30 @@ hodorButton.addEventListener("click", () => hodor("Hodor")); /* This works */
 /* hodorButton.addEventListener("click", ("Hodor") => hodor()); /* This doesn't work */
 
 function updateScore() {
+    if(computerScore >= 3){
+        results.textContent = "COMPUTER WINS!!!";
+        gameOver = true;
+    } else if (playerScore >=3){
+        results.textContent = "YOU'RE WINNER!";
+        gameOver = true;
+    }
+
+    if(!gameOver){
+        round++;
+    }
+
     playerScoreText.textContent = "PLAYER: " + playerScore;
     computerScoreText.textContent = "COMPUTER: " + computerScore;
     roundText.textContent = "ROUND " + round;
+}
 
-    if(computerScore >= 3){
-        results.textContent = "COMPUTER WINS!!!";
-    } else if (playerScore >=3){
-        results.textContent = "YOU'RE WINNER!";
-    }
-
+function restartGame(){
+    round = 1;
+    computerScore = 0;
+    playerScore = 0;
+    updateScore();
+    results.textContent = "This is a best of 5 series of Rock, Paper, Scissors!";
+    gameOver = false;
 }
 
 function computerPlay() {
@@ -60,44 +75,40 @@ function randomInt(max) {
 function playRound(playerSelection) {
     let computerSelection = computerPlay();
     let winner;
-    if (playerSelection === 'rock'){
+    if (gameOver){
+        results.textContent = "Click Hodor to start a new game!";
+    } else if (playerSelection === 'rock'){
         if (computerSelection === 'rock'){
             results.textContent ='You both chose rock. Tie!';
         } else if (computerSelection === 'paper'){
             results.textContent ='You chose rock, and computer chose paper. Computer wins!';
             computerScore++;
-            round++;
             updateScore()
         } else if (computerSelection === 'scissors'){
-            results.textContent ='You chose rock, and computer chose scissors. You\'re winner!';
+            results.textContent ='You chose rock, and computer chose scissors. You win!';
             playerScore++;
-            round++
             updateScore()
         }
     } else if (playerSelection === 'paper') {
         if (computerSelection === 'rock') {
             results.textContent ='You chose paper, and computer chose rock. You win!';
             playerScore++;
-            round++
             updateScore()
         } else if (computerSelection === 'paper') {
             results.textContent ='You both chose paper. Tie!';
         } else if (computerSelection === 'scissors') {
             results.textContent ='You chose paper, and computer chose scissors. Computer wins!';
             computerScore++;
-            round++;
             updateScore()
         }
     } else if (playerSelection === 'scissors') {
         if (computerSelection === 'rock') {
             results.textContent ='You chose scissors, and computer chose rock. Computer wins!';
             computerScore++;
-            round++;
             updateScore()
         } else if (computerSelection === 'paper') {
             results.textContent ='You chose scissors, and computer chose paper. You win!';
             playerScore++;
-            round++
             updateScore()
         } else if (computerSelection === 'scissors') {
             results.textContent ='You both chose scissors. Tie!';
@@ -112,6 +123,9 @@ function hodor(hodorIn) {
         console.log(":(");
     }
 
+    if(gameOver){
+        restartGame();
+    }
 }
 
 
